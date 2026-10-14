@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>All runs, one start · Runner Map</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('rm.theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+</head>
+<body class="overlay-page">
+  <main class="stage">
+    <canvas id="canvas" aria-label="All your runs drawn from the same starting point"></canvas>
+    <canvas id="dots" aria-hidden="true"></canvas>
+
+    <header class="ov-head">
+      <a class="icon-btn" href="/" aria-label="Back to the map" title="Back to the map">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </a>
+      <div class="ov-title">
+        <h1>All runs, one start</h1>
+        <p id="ov-stats" class="muted">Loading…</p>
+      </div>
+      <button id="date-btn" type="button" class="date-btn" aria-label="Choose dates">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+        <span class="drp-label">All time</span>
+        <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <button id="theme-toggle" class="icon-btn" aria-label="Switch theme" title="Switch theme">
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+      </button>
+    </header>
+
+    <nav id="modes" class="modes ov-modes" aria-label="Colour by"></nav>
+
+    <div id="legend" class="legend hidden" aria-live="polite"></div>
+
+    <div class="ov-actions">
+      <button id="replay" class="ov-btn" title="Replay your runs in date order (space)">
+        <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg>
+        <svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+        <span>Replay</span>
+      </button>
+      <button id="speed" class="ov-btn speed" title="Replay speed" aria-label="Replay speed 1 times">1×</button>
+      <button id="save" class="ov-btn" title="Save as an image">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        <span>Save image</span>
+      </button>
+      <button id="fit" class="ov-btn" title="Reset the view (0)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        <span>Reset view</span>
+      </button>
+    </div>
+
+    <div id="replay-date" class="replay-date hidden" aria-live="off"></div>
+    <div id="hint" class="ov-hint hidden"></div>
+
+    <article id="run-card" class="run-card hidden" aria-live="polite">
+      <button id="run-card-close" class="icon-btn close" aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h2 id="run-card-title"></h2>
+      <p id="run-card-date" class="muted"></p>
+      <dl id="run-card-stats"></dl>
+      <a id="run-card-map" class="strava-link">Show on map →</a>
+    </article>
+
+    <div id="loading" class="map-loading"><span class="spinner"></span><span>Loading your runs…</span></div>
+  </main>
+
+  <script src="shared.js"></script>
+  <script src="datepicker.js"></script>
+  <script src="polyline.js"></script>
+  <script src="overlay.js"></script>
+</body>
+</html>

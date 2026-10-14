@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Runner Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    // Apply the saved theme before first paint, so there's no flash.
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('rm.theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+</head>
+<body>
+  <!-- Signed-out screen -->
+  <section id="login" class="login hidden">
+    <div class="login-card">
+      <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+        <path d="M8 36c6-14 12-4 18-14s10-8 14-14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="8" cy="36" r="4" fill="currentColor"/>
+      </svg>
+      <h1>Runner Map</h1>
+      <p>Every run you've logged on Strava, together on one map.</p>
+      <a class="btn-strava" href="/auth/login">Connect with Strava</a>
+      <a class="btn-ghost" href="/auth/demo">Try it with demo data</a>
+      <p id="login-error" class="error hidden" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Signed-in app -->
+  <section id="app" class="app hidden">
+    <aside class="sidebar">
+      <header class="topbar">
+        <img id="athlete-avatar" class="avatar" alt="" />
+        <div class="who">
+          <div id="athlete-name" class="athlete-name"></div>
+          <div class="who-sub">
+            <span id="demo-badge" class="badge hidden">Demo data</span>
+            <button id="logout" class="link">Sign out</button>
+          </div>
+        </div>
+        <button id="theme-toggle" class="icon-btn" aria-label="Switch to dark map" title="Switch to dark map">
+          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+        </button>
+      </header>
+
+      <div class="controls">
+        <div class="field">
+          <span>Dates</span>
+          <button id="date-btn" type="button" class="date-btn" aria-label="Choose dates">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+          <span class="drp-label">All time</span>
+          <svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        </div>
+        <button id="refresh" class="btn" title="Fetch new runs from Strava">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>
+          <span>Refresh</span>
+        </button>
+      </div>
+
+      <div class="stats" aria-live="polite">
+        <div><span id="stat-count">–</span><small>runs</small></div>
+        <div><span id="stat-distance">–</span><small>km</small></div>
+        <div><span id="stat-time">–</span><small>hours</small></div>
+        <div><span id="stat-elev">–</span><small>m climbed</small></div>
+      </div>
+
+      <p id="status" class="status" role="status"></p>
+      <ul id="run-list" class="run-list" aria-label="Runs"></ul>
+
+      <footer class="powered">Powered by Strava</footer>
+    </aside>
+
+    <main class="map-wrap">
+      <div id="map" class="map"></div>
+
+      <nav id="modes" class="modes" aria-label="Map mode"></nav>
+
+      <div id="legend" class="legend hidden" aria-live="polite"></div>
+
+      <button id="extent-chip" class="extent-chip hidden"></button>
+
+      <article id="run-card" class="run-card hidden" aria-live="polite">
+        <button id="run-card-close" class="icon-btn close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <h2 id="run-card-title"></h2>
+        <p id="run-card-date" class="muted"></p>
+        <dl id="run-card-stats"></dl>
+        <a id="run-card-link" class="strava-link" target="_blank" rel="noopener">View on Strava</a>
+      </article>
+
+      <div id="map-loading" class="map-loading hidden"><span class="spinner"></span><span>Loading your runs…</span></div>
+    </main>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="shared.js"></script>
+  <script src="datepicker.js"></script>
+  <script src="polyline.js"></script>
+  <script src="heat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

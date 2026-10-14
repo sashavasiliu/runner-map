@@ -1,0 +1,20 @@
+# One-click setup on Render (https://render.com): New > Blueprint > pick this repo.
+# Render asks for the two Strava values; the public address is detected
+# automatically and a random SESSION_SECRET is generated for you.
+services:
+  - type: web
+    name: runner-map
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: STRAVA_CLIENT_ID
+        sync: false
+      - key: STRAVA_CLIENT_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: "22"
